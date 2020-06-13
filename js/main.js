@@ -2,7 +2,23 @@
 
 // 1.Напишите функцию для создания массива из 8 сгенерированных JS-объектов.
 //  Каждый объект массива ‐ описание похожего объявления неподалёку.
-
+var OFFSET_LEFT_MAX = 1200;
+var OFFSET_LEFT_MIN = 50;
+var OFFSET_TOP_MAX = 630;
+var OFFSET_TOP_MIN = 130;
+var PRICE_MAX = 1000;
+var PRICE_MIN = 10;
+var ROOMS_MAX = 50;
+var ROOMS_MIN = 1;
+var GUESTS_MAX = 50;
+var GUESTS_MIN = 1;
+var ARRAY_OFFER = ['palace', 'flat', 'house', 'bungalo'];
+var ARRAY_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var ARRAY_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var ARRAY_CHECKIN = ['12:00', '13:00', '14:00'];
+var ARRAY_CHECKOUT = ['12:00', '13:00', '14:00'];
+var MARK_WIDTH = 50;
+var MARK_HEIGHT = 70;
 
 // получение случайного элемента массива
 var getArrayRandElement = function (array) {
@@ -37,23 +53,6 @@ var getValueRandom = function (max, min) {
 
 // функция для создания одного элемиента-объявления
 var createAd = function (itemNumber) {
-
-  var offsetLeftMax = 1200;
-  var offsetLeftMin = 50;
-  var offsetTopMax = 630;
-  var offsetTopMin = 130;
-  var priceMax = 1000;
-  var priceMin = 10;
-  var roomsMax = 50;
-  var roomsMin = 1;
-  var guestsMax = 50;
-  var guestsMin = 1;
-  var arrayOffer = ['palace', 'flat', 'house', 'bungalo'];
-  var arrayfeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var arrayPhotos = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-  var arrayCheckin = ['12:00', '13:00', '14:00'];
-  var arrayCheckout = ['12:00', '13:00', '14:00'];
-
   var ad = {};
   var adAuthor = {};
   var adOffer = {};
@@ -62,22 +61,22 @@ var createAd = function (itemNumber) {
 
   adAuthor.avatar = 'img/avatars/user0' + a + '.png';
 
-  adLocation.x = getValueRandom(offsetLeftMax, offsetLeftMin);
+  adLocation.x = getValueRandom(OFFSET_LEFT_MAX, OFFSET_LEFT_MIN);
   // случайное число, координата x метки на карте. Значение ограничено размерами блока, в котором перетаскивается метка.
-  adLocation.y = getValueRandom(offsetTopMax, offsetTopMin);
+  adLocation.y = getValueRandom(OFFSET_TOP_MAX, OFFSET_TOP_MIN);
   // случайное число, координата y метки на карте от 130 до 630.
 
   adOffer.title = 'Предложение ' + a;
   adOffer.address = '(' + adLocation.x + ', ' + adLocation.y + ')';
-  adOffer.price = getValueRandom(priceMax, priceMin);
-  adOffer.type = getArrayRandElement(arrayOffer);
-  adOffer.rooms = getValueRandom(roomsMax, roomsMin);
-  adOffer.guests = getValueRandom(guestsMax, guestsMin);
-  adOffer.checkin = getArrayRandElement(arrayCheckin);
-  adOffer.checkout = getArrayRandElement(arrayCheckout);
-  adOffer.features = getArrayRandElements(arrayfeatures);
+  adOffer.price = getValueRandom(PRICE_MAX, PRICE_MIN);
+  adOffer.type = getArrayRandElement(ARRAY_OFFER);
+  adOffer.rooms = getValueRandom(ROOMS_MAX, ROOMS_MIN);
+  adOffer.guests = getValueRandom(GUESTS_MAX, GUESTS_MIN);
+  adOffer.checkin = getArrayRandElement(ARRAY_CHECKIN);
+  adOffer.checkout = getArrayRandElement(ARRAY_CHECKOUT);
+  adOffer.features = getArrayRandElements(ARRAY_FEATURES);
   adOffer.description = 'Текст описания ' + a;
-  adOffer.photos = getArrayRandElements(arrayPhotos);
+  adOffer.photos = getArrayRandElements(ARRAY_PHOTOS);
 
 
   ad.author = adAuthor;
@@ -110,11 +109,10 @@ var adTemplate = document.querySelector('#pin').content.querySelector('button');
 var createAdElement = function (elementNumber) {
   var a = elementNumber;
   var adElement = adTemplate.cloneNode(true);
-  var markWidth = 50;
-  var markHeight = 70;
 
-  var adtop = adData[a].location.y - markHeight + 'px';
-  var adleft = adData[a].location.x - markWidth / 2 + 'px';
+
+  var adtop = adData[a].location.y - MARK_HEIGHT + 'px';
+  var adleft = adData[a].location.x - MARK_WIDTH / 2 + 'px';
 
   adElement.style.left = adleft;
   adElement.style.top = adtop;
