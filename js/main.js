@@ -3,14 +3,15 @@
 // 1.Напишите функцию для создания массива из 8 сгенерированных JS-объектов.
 //  Каждый объект массива ‐ описание похожего объявления неподалёку.
 
+
 // получение случайного элемента массива
-var arrayRandElement = function (arr) {
-  var rand = Math.floor(Math.random() * arr.length);
-  return arr[rand];
+var getArrayRandElement = function (array) {
+  var rand = Math.floor(Math.random() * array.length);
+  return array[rand];
 };
 
 // получение нескольких случайных элеменов массива
-var arrayRandElements = function (array) {
+var getArrayRandElements = function (array) {
   var clone = array.slice();
   var newArray = [];
   var randomCount = Math.floor(Math.random() * array.length);
@@ -28,9 +29,31 @@ var arrayRandElements = function (array) {
   return newArray;
 };
 
-// Можно еще вынести сюда фуекцию рендом чисел с пределами
+//  функция рендом чисел с пределами - для получения координат меток, диапазона цен, количества комнат и проч
+var getValueRandom = function (max, min) {
+  var randNumber = Math.floor(Math.random() * (max - min) + min);
+  return randNumber;
+};
+
 // функция для создания одного элемиента-объявления
 var createAd = function (itemNumber) {
+
+  var offsetLeftMax = 1200;
+  var offsetLeftMin = 50;
+  var offsetTopMax = 630;
+  var offsetTopMin = 130;
+  var priceMax = 1000;
+  var priceMin = 10;
+  var roomsMax = 50;
+  var roomsMin = 1;
+  var guestsMax = 50;
+  var guestsMin = 1;
+  var arrayOffer = ['palace', 'flat', 'house', 'bungalo'];
+  var arrayfeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+  var arrayPhotos = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+  var arrayCheckin = ['12:00', '13:00', '14:00'];
+  var arrayCheckout = ['12:00', '13:00', '14:00'];
+
   var ad = {};
   var adAuthor = {};
   var adOffer = {};
@@ -39,79 +62,76 @@ var createAd = function (itemNumber) {
 
   adAuthor.avatar = 'img/avatars/user0' + a + '.png';
 
-
-  adLocation.x = Math.floor(Math.random() * 1199 + 1);
+  adLocation.x = getValueRandom(offsetLeftMax, offsetLeftMin);
   // случайное число, координата x метки на карте. Значение ограничено размерами блока, в котором перетаскивается метка.
-  adLocation.y = Math.floor(Math.random() * 500 + 130);
+  adLocation.y = getValueRandom(offsetTopMax, offsetTopMin);
   // случайное число, координата y метки на карте от 130 до 630.
-
 
   adOffer.title = 'Предложение ' + a;
   adOffer.address = '(' + adLocation.x + ', ' + adLocation.y + ')';
-  adOffer.price = Math.floor(Math.random()) * 1000 + 10;
-
-  var arrayOffer = ['palace', 'flat', 'house', 'bungalo'];
-  adOffer.type = arrayRandElement(arrayOffer);
-
-  adOffer.rooms = Math.floor(Math.random()) * 50 + 1;
-
-  adOffer.guests = Math.floor(Math.random()) * 50 + 1;
-
-  var arrayCheckin = ['12:00', '13:00', '14:00'];
-  adOffer.checkin = arrayRandElement(arrayCheckin);
-
-  var arrayCheckout = ['12:00', '13:00', '14:00'];
-  adOffer.checkout = arrayRandElement(arrayCheckout);
-
-  var arrayfeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  adOffer.features = arrayRandElements(arrayfeatures);
+  adOffer.price = getValueRandom(priceMax, priceMin);
+  adOffer.type = getArrayRandElement(arrayOffer);
+  adOffer.rooms = getValueRandom(roomsMax, roomsMin);
+  adOffer.guests = getValueRandom(guestsMax, guestsMin);
+  adOffer.checkin = getArrayRandElement(arrayCheckin);
+  adOffer.checkout = getArrayRandElement(arrayCheckout);
+  adOffer.features = getArrayRandElements(arrayfeatures);
   adOffer.description = 'Текст описания ' + a;
-
-  var arrayPhotos = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-  adOffer.photos = arrayRandElements(arrayPhotos);
+  adOffer.photos = getArrayRandElements(arrayPhotos);
 
 
   ad.author = adAuthor;
   ad.offer = adOffer;
   ad.location = adLocation;
-  // console.log(ad);
+
   return ad;
 };
 
 // фунция для создания массива из объектов-оъявлений
-var createAds = function () {
+var createAds = function (elementsCount) {
   var adsArray = [];
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < elementsCount; i++) {
     adsArray[i] = createAd(i);
   }
-  console.log(adsArray);
+  // console.log(adsArray);
   return adsArray;
 
 };
 
-var adData = createAds();
+var adData = createAds(8);
 
 // 2. У блока .map уберите класс .map--faded.
 document.querySelector('.map').classList.remove('map--faded');
 
 // 3.На основе данных, созданных в первом пункте, создайте DOM-элементы, соответствующие меткам на карте,
 // и заполните их данными из массива. Итоговую разметку метки .map__pin можно взять из шаблона #pin.
-
-
 var adTemplate = document.querySelector('#pin').content.querySelector('button');
+
+var createAdElement = function (elementNumber) {
+  var a = elementNumber;
+  var adElement = adTemplate.cloneNode(true);
+  var markWidth = 50;
+  var markHeight = 70;
+
+  var adtop = adData[a].location.y - markHeight + 'px';
+  var adleft = adData[a].location.x - markWidth / 2 + 'px';
+
+  adElement.style.left = adleft;
+  adElement.style.top = adtop;
+  adElement.children[0].src = adData[a].author.avatar;
+  adElement.children[0].alt = adData[a].offer.title;
+  return adElement;
+};
+
+// 4.Отрисуйте сгенерированные DOM-элементы в блок .map__pins. Для вставки элементов используйте DocumentFragment.
+var fragment = document.createDocumentFragment();
 var adList = document.querySelector('.map__pins');
 
-
-for (var i = 0; i < adData.length; i++) {
-  var adElement = adTemplate.cloneNode(true);
-
-  var top = adData[i].location.y + 70 + 'px';
-  var left = adData[i].location.x + 25 + 'px';
-
-  adElement.style.left = left;
-  adElement.style.top = top;
-  adElement.children[0].src = adData[i].author.avatar;
-  adElement.children[0].alt = adData[i].offer.title;
-  adList.appendChild(adElement);
-
-}
+var getAdElements = function () {
+  for (var i = 0; i < adData.length; i++) {
+    var createElement = createAdElement(i);
+    fragment.appendChild(createElement);
+  }
+  adList.appendChild(fragment);
+};
+getAdElements();
